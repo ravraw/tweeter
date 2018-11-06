@@ -1,0 +1,43 @@
+.container .new-tweet {
+  border: 1px solid black;
+  height: 19rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: #eee;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* .new-tweet > * {
+  border: 1px solid red;
+} */
+.new-tweet > h2 {
+  border-bottom: 1.5px solid black;
+  font-size: 3rem;
+}
+.new-tweet > form > textarea {
+  height: 7rem;
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 2rem;
+  border-radius: 2px;
+}
+.form__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin: 0.4rem 0;
+  font-size: 1.7rem;
+}
+
+.form__footer > input {
+  padding: 0.3rem 0.5rem;
+  font-size: 1.7rem;
+}
+.form__footer > span {
+  padding: 0.3rem 0.5rem;
+
+  font-style: italic;
+}
