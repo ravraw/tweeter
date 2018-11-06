@@ -1,0 +1,21 @@
+#nav-bar {
+  position: relative;
+  background-color: #00a087;
+  color: #e8fdff;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 1.6rem;
+  height: 8rem;
+  width: 100vw;
+  padding: 0 2em;
+}
+
+#nav-bar .logo {
+  height: 8rem;
+  width: 8rem;
+  margin-right: 1rem;
+}
+#nav-bar .header {
+  font-size: 3.2rem;
+}
