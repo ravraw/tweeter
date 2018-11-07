@@ -34,6 +34,6 @@ main.container {
   margin: 0 auto;
   width: 450px;
   background-color: white;
-  height: 60rem;
+  height: auto;
   padding: 2rem;
 }
