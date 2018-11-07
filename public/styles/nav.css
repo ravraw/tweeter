@@ -19,3 +19,33 @@
 #nav-bar .header {
   font-size: 3.2rem;
 }
+
+#nav-bar .compose__box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e8fdff;
+  color: #00a087;
+  font-size: 3rem;
+  font-style: bold;
+  border-radius: 1rem;
+  margin-left: auto;
+  border: 1px solid black;
+  padding: 1rem;
+}
+
+.compose__box .compose__btn {
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.compose__box:hover > button,
+.compose__box:hover svg {
+  color: #00a087;
+  fill: #00a087;
+  cursor: pointer;
+}
+.compose__box .tweet__icon--compose {
+  height: 30px;
+  width: 30px;
+}

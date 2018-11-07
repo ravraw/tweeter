@@ -123,7 +123,7 @@
   visibility: visible;
 }
 
-footer .tweet__icon-box svg {
+.tweet__icon-box svg {
   height: 20px;
   width: 20px;
   margin-right: 1rem;
