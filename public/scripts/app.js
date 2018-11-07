@@ -6,96 +6,121 @@
 
 // waits till DOM loads
 document.addEventListener('DOMContentLoaded', e => {
+  // DOM elements MAP
+  const elementsMap = {
+    tweets_container: document.querySelector('#tweets__container'),
+    errorParagraph: document.querySelector('.error__message'),
+    tweetForm: document.querySelector('.new-tweet form'),
+    textarea: document.querySelector('.new-tweet form > textarea')
+  };
+
   console.log('DOM fully loaded and parsed from app.js');
-  // Fake data taken from tweets.json
-  const data = [
-    {
-      user: {
-        name: 'Newton',
-        avatars: {
-          small:
-            'https://vanillicon.com/788e533873e80d2002fa14e1412b4188_50.png',
-          regular:
-            'https://vanillicon.com/788e533873e80d2002fa14e1412b4188.png',
-          large:
-            'https://vanillicon.com/788e533873e80d2002fa14e1412b4188_200.png'
-        },
-        handle: '@SirIsaac'
-      },
-      content: {
-        text:
-          'If I have seen further it is by standing on the shoulders of giants'
-      },
-      created_at: 1461116232227
-    },
-    {
-      user: {
-        name: 'Descartes',
-        avatars: {
-          small:
-            'https://vanillicon.com/7b89b0d8280b93e2ba68841436c0bebc_50.png',
-          regular:
-            'https://vanillicon.com/7b89b0d8280b93e2ba68841436c0bebc.png',
-          large:
-            'https://vanillicon.com/7b89b0d8280b93e2ba68841436c0bebc_200.png'
-        },
-        handle: '@rd'
-      },
-      content: { text: 'Je pense , donc je suis' },
-      created_at: 14611139
-    },
-    {
-      user: {
-        name: 'Johann von Goethe',
-        avatars: {
-          small:
-            'https://vanillicon.com/d55cf8e18b47d4baaf60c006a0de39e1_50.png',
-          regular:
-            'https://vanillicon.com/d55cf8e18b47d4baaf60c006a0de39e1.png',
-          large:
-            'https://vanillicon.com/d55cf8e18b47d4baaf60c006a0de39e1_200.png'
-        },
-        handle: '@johann49'
-      },
-      content: {
-        text: 'Es ist nichts schrecklicher als eine tätige Unwissenheit.'
-      },
-      created_at: 1461
+  // data variable
+  let data;
+
+  // loop and renderTweets
+  const renderTweets = tweetsArray => {
+    tweetsArray.forEach(tweet => {
+      const tweetHtml = createTweetElement(tweet);
+      elementsMap.tweets_container.insertAdjacentHTML('afterbegin', tweetHtml);
+    });
+  };
+
+  // get tweets with ajax
+  const loadTweets = () => {
+    const request = new XMLHttpRequest();
+    request.open('GET', '/tweets', true);
+    request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log('All tweets:', JSON.parse(this.responseText));
+        data = JSON.parse(this.responseText);
+        renderTweets(data);
+      }
+    };
+    request.send();
+  };
+  loadTweets();
+
+  // check error function
+  const hasError = tweetText => {
+    let error = false;
+    if (tweetText.length === 0) {
+      errorMessage = 'Enter something...';
+      error = true;
+    } else if (tweetText.length > 140) {
+      errorMessage = 'Too many words ....';
+      error = true;
+    } else {
+      errorMessage = '';
     }
-  ];
+    elementsMap.errorParagraph.textContent = errorMessage;
+    return error;
+  };
+
+  // callback function for submitting a tweet
+  const submitTweet = e => {
+    event.preventDefault();
+    let errorMessage = '';
+
+    const tweetText = elementsMap.textarea.value;
+
+    if (!hasError(tweetText)) {
+      errorMessage = '';
+      if (event.keyCode === 13 || e.type === 'submit') {
+        const request = new XMLHttpRequest();
+        request.open('POST', '/tweets', true);
+        request.setRequestHeader(
+          'Content-Type',
+          'application/x-www-form-urlencoded; charset=UTF-8'
+        );
+        request.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 201) {
+            console.log('New tweet :', JSON.parse(this.responseText));
+            data = JSON.parse(this.responseText);
+            renderTweets([data]);
+          }
+        };
+        request.send(`text=${tweetText}`);
+        elementsMap.textarea.value = '';
+      }
+    }
+  };
+  // added event listeners for submit and enter on form
+  elementsMap.tweetForm.addEventListener('keyup', submitTweet);
+  elementsMap.tweetForm.addEventListener('submit', submitTweet);
+  elementsMap.tweetForm.addEventListener('blur', () => {});
 
   // function to return html template for article with data inserted from the tweet object
   const createTweetElement = tweetObj => {
-    let { created_at } = tweetObj;
+    const { created_at } = tweetObj;
+    const now = new Date().getTime();
+    let tweetAge = now - created_at;
     let sufix = '';
     switch (true) {
-      case created_at >= 31557600000:
+      case tweetAge >= 31557600000:
         sufix += 'year ago';
-        created_at = Math.floor(created_at / 31557600000);
+        tweetAge = Math.floor(tweetAge / 31557600000);
         console.log(sufix);
         break;
-      case created_at >= 86400000:
+      case tweetAge >= 86400000:
         sufix += 'days ago';
-        created_at = Math.floor(created_at / 86400000);
+        tweetAge = Math.floor(tweetAge / 86400000);
         console.log(sufix);
         break;
-      case created_at >= 3600000:
+      case tweetAge >= 3600000:
         sufix += 'hours ago';
-        created_at = Math.floor(created_at / 3600000);
+        tweetAge = Math.floor(tweetAge / 3600000);
         break;
-      case created_at >= 60000:
+      case tweetAge >= 60000:
         sufix += 'minutes ago';
-        created_at = Math.floor(created_at / 60000);
+        tweetAge = Math.floor(tweetAge / 60000);
         break;
       default:
         sufix += 'seconds ago';
-        created_at = Math.floor(created_at / 1000);
+        tweetAge = Math.floor(tweetAge / 1000);
         break;
     }
 
-    // console.log(typeof created_at);
-    // console.log(created_at);
-    // console.log(sufix);
     return `<article class="tweet">
         <header class="tweet__header">
           <img src='${tweetObj.user.avatars.small}' alt="avatar">
@@ -106,7 +131,7 @@ document.addEventListener('DOMContentLoaded', e => {
           <p>${tweetObj.content.text}</p>
         </div>
         <footer class="tweet__footer">
-          <p class="tweet__time">${created_at} ${sufix}</p>
+          <p class="tweet__time">${tweetAge} ${sufix}</p>
           <div class="icons__box">
             <div class=" tweet__icon-box ">
               <svg class="tweet__icon--flag ">
@@ -128,15 +153,4 @@ document.addEventListener('DOMContentLoaded', e => {
       </article>
   `;
   };
-
-  // loop and renderTweets
-  const renderTweets = tweetsArray => {
-    tweetsArray.forEach(tweet => {
-      const tweetHtml = createTweetElement(tweet);
-      const tweets_container = document.querySelector('#tweets__container');
-      tweets_container.insertAdjacentHTML('afterbegin', tweetHtml);
-    });
-  };
-
-  renderTweets(data);
 });
