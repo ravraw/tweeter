@@ -8,10 +8,12 @@
 document.addEventListener('DOMContentLoaded', e => {
   // DOM elements MAP
   const elementsMap = {
+    validCounterLength: 140,
     tweets_container: document.querySelector('#tweets__container'),
     errorParagraph: document.querySelector('.error__message'),
     tweetForm: document.querySelector('.new-tweet form'),
-    textarea: document.querySelector('.new-tweet form > textarea')
+    textarea: document.querySelector('.new-tweet form > textarea'),
+    counter: document.querySelector('.form__footer .counter')
   };
 
   console.log('DOM fully loaded and parsed from app.js');
@@ -88,7 +90,11 @@ document.addEventListener('DOMContentLoaded', e => {
   // added event listeners for submit and enter on form
   elementsMap.tweetForm.addEventListener('keyup', submitTweet);
   elementsMap.tweetForm.addEventListener('submit', submitTweet);
-  elementsMap.tweetForm.addEventListener('blur', () => {});
+  elementsMap.textarea.addEventListener('blur', e => {
+    elementsMap.textarea.value = '';
+    elementsMap.errorParagraph.textContent = '';
+    elementsMap.counter.textContent = elementsMap.validCounterLength;
+  });
 
   // function to return html template for article with data inserted from the tweet object
   const createTweetElement = tweetObj => {
