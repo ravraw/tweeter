@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', e => {
 
   // loop and renderTweets
   const renderTweets = tweetsArray => {
+    console.log(typeof tweetsArray);
     tweetsArray.forEach(tweet => {
       const tweetHtml = createTweetElement(tweet);
       elementsMap.tweets_container.insertAdjacentHTML('afterbegin', tweetHtml);
@@ -80,11 +81,12 @@ document.addEventListener('DOMContentLoaded', e => {
         );
         request.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 201) {
-            console.log('New tweet :', JSON.parse(this.responseText));
+            //console.log('New tweet :', JSON.parse(this.responseText));
             data = JSON.parse(this.responseText);
             renderTweets([data]);
           }
         };
+        //request.send(`text=${tweetText}`);
         request.send(`text=${tweetText}`);
         elementsMap.textarea.value = '';
       }
