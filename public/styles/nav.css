@@ -1,5 +1,7 @@
 #nav-bar {
-  position: relative;
+  /* position: relative; */
+  position: fixed;
+  top: 0px;
   background-color: #00a087;
   color: #e8fdff;
   display: flex;

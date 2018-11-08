@@ -10,19 +10,10 @@
   justify-content: space-between;
 }
 
-/* .hidden {
-  visibility: hidden;
-} */
 .visible {
   visibility: visible;
 }
-/* .container .new__tweet {
-  visibility: hidden;
-} */
 
-/* .new-tweet > * {
-  border: 1px solid red;
-} */
 .new-tweet > h2 {
   border-bottom: 1.5px solid black;
   font-size: 3rem;
