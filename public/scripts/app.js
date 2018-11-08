@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', e => {
     if (tweetText.length === 0) {
       errorMessage = 'Enter something...';
       error = true;
-    } else if (tweetText.length > 140) {
+    } else if (tweetText.length > elementsMap.validCounterLength) {
       errorMessage = 'Too many words ....';
       error = true;
     } else {
@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', e => {
         //request.send(`text=${tweetText}`);
         request.send(`text=${tweetText}`);
         elementsMap.textarea.value = '';
+        elementsMap.counter.textContent = elementsMap.validCounterLength;
       }
     }
   };
