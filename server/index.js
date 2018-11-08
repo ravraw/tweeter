@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 
 // Basic express setup:
 
@@ -12,6 +13,11 @@ app.use(express.static('public'));
 
 const MongoClient = require('mongodb').MongoClient;
 const MONGODB_URI = 'mongodb://localhost:27017/tweeter';
+
+// FOR MLAB DB
+// const MONGODB_URI = `mongodb://${process.env.DB_USER}:${
+//   process.env.DB_PASSWORD
+// }@ds159493.mlab.com:59493/tweeter`;
 
 MongoClient.connect(
   MONGODB_URI,
