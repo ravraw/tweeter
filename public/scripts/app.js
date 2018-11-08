@@ -9,12 +9,16 @@ document.addEventListener('DOMContentLoaded', e => {
   // DOM elements MAP
   const elementsMap = {
     validCounterLength: 140,
-    tweets_container: document.querySelector('#tweets__container'),
+    tweets_container: document.getElementById('tweets__container'),
     errorParagraph: document.querySelector('.error__message'),
     tweetForm: document.querySelector('.new-tweet form'),
     textarea: document.querySelector('.new-tweet form > textarea'),
-    counter: document.querySelector('.form__footer .counter')
+    counter: document.querySelector('.form__footer .counter'),
+    compose: document.querySelector('.compose__box'),
+    newTweet: document.querySelector('.container > .new-tweet')
   };
+
+  elementsMap.newTweet.style.display = 'none';
 
   console.log('DOM fully loaded and parsed from app.js');
   // data variable
@@ -34,7 +38,6 @@ document.addEventListener('DOMContentLoaded', e => {
     request.open('GET', '/tweets', true);
     request.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        console.log('All tweets:', JSON.parse(this.responseText));
         data = JSON.parse(this.responseText);
         renderTweets(data);
       }
@@ -63,12 +66,12 @@ document.addEventListener('DOMContentLoaded', e => {
   const submitTweet = e => {
     event.preventDefault();
     let errorMessage = '';
-
     const tweetText = elementsMap.textarea.value;
-
     if (!hasError(tweetText)) {
       errorMessage = '';
       if (event.keyCode === 13 || e.type === 'submit') {
+        console.log('makin req');
+        console.log('content', tweetText);
         const request = new XMLHttpRequest();
         request.open('POST', '/tweets', true);
         request.setRequestHeader(
@@ -90,10 +93,11 @@ document.addEventListener('DOMContentLoaded', e => {
   // added event listeners for submit and enter on form
   elementsMap.tweetForm.addEventListener('keyup', submitTweet);
   elementsMap.tweetForm.addEventListener('submit', submitTweet);
-  elementsMap.textarea.addEventListener('blur', e => {
-    elementsMap.textarea.value = '';
-    elementsMap.errorParagraph.textContent = '';
-    elementsMap.counter.textContent = elementsMap.validCounterLength;
+
+  // add event listner to compose box
+  elementsMap.compose.addEventListener('click', e => {
+    elementsMap.newTweet.style.display = 'flex';
+    elementsMap.textarea.focus();
   });
 
   // function to return html template for article with data inserted from the tweet object

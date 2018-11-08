@@ -10,6 +10,16 @@
   justify-content: space-between;
 }
 
+/* .hidden {
+  visibility: hidden;
+} */
+.visible {
+  visibility: visible;
+}
+/* .container .new__tweet {
+  visibility: hidden;
+} */
+
 /* .new-tweet > * {
   border: 1px solid red;
 } */
@@ -23,10 +33,11 @@
   padding: 0.5rem;
   font-size: 2rem;
   border-radius: 2px;
+  outline: none;
 }
 .form__footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-end;
   margin: 0.4rem 0;
   font-size: 1.7rem;
@@ -39,10 +50,14 @@
 .form__footer > span {
   padding: 0.3rem 0.5rem;
   font-style: italic;
+  margin-left: auto;
 }
-
+.form__footer > p {
+  font-size: 2rem;
+  margin-left: 1rem;
+}
 .invalid {
-  color: red;
+  color: tomato;
 }
 
 /* styles for single tweets */
