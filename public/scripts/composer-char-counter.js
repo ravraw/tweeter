@@ -22,6 +22,5 @@ document.addEventListener('DOMContentLoaded', e => {
     } else {
       elementsObj.counter.classList.remove('invalid');
     }
-    // console.log(elementsObj.counter.textContent);
   });
 });

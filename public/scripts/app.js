@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', e => {
 
   // loop and renderTweets
   const renderTweets = tweetsArray => {
-    console.log(typeof tweetsArray);
     tweetsArray.forEach(tweet => {
       const tweetHtml = createTweetElement(tweet);
       elementsMap.tweets_container.insertAdjacentHTML('afterbegin', tweetHtml);
@@ -71,8 +70,6 @@ document.addEventListener('DOMContentLoaded', e => {
     if (!hasError(tweetText)) {
       errorMessage = '';
       if (event.keyCode === 13 || e.type === 'submit') {
-        console.log('makin req');
-        console.log('content', tweetText);
         const request = new XMLHttpRequest();
         request.open('POST', '/tweets', true);
         request.setRequestHeader(
@@ -81,12 +78,10 @@ document.addEventListener('DOMContentLoaded', e => {
         );
         request.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 201) {
-            //console.log('New tweet :', JSON.parse(this.responseText));
             data = JSON.parse(this.responseText);
             renderTweets([data]);
           }
         };
-        //request.send(`text=${tweetText}`);
         request.send(`text=${tweetText}`);
         elementsMap.textarea.value = '';
         elementsMap.counter.textContent = elementsMap.validCounterLength;
@@ -99,7 +94,6 @@ document.addEventListener('DOMContentLoaded', e => {
 
   // add event listner to compose box
   elementsMap.compose.addEventListener('click', e => {
-    console.log(elementsMap.newTweet);
     elementsMap.newTweet.classList.toggle('visible');
     // elementsMap.newTweet.classList.toogle('animate1');
     // elementsMap.newTweet.classList.toogle('animate2');
@@ -116,12 +110,10 @@ document.addEventListener('DOMContentLoaded', e => {
       case tweetAge >= 31557600000:
         sufix += 'year ago';
         tweetAge = Math.floor(tweetAge / 31557600000);
-        console.log(sufix);
         break;
       case tweetAge >= 86400000:
         sufix += 'days ago';
         tweetAge = Math.floor(tweetAge / 86400000);
-        console.log(sufix);
         break;
       case tweetAge >= 3600000:
         sufix += 'hours ago';
