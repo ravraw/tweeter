@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', e => {
     textarea: document.querySelector('.new-tweet form > textarea'),
     counter: document.querySelector('.form__footer .counter'),
     compose: document.querySelector('.compose__box'),
-    newTweet: document.querySelector('.container > .new-tweet')
+    newTweet: document.querySelector('.container .new-tweet')
   };
 
   //elementsMap.newTweet.style.display = 'none';
@@ -99,8 +99,10 @@ document.addEventListener('DOMContentLoaded', e => {
 
   // add event listner to compose box
   elementsMap.compose.addEventListener('click', e => {
-    console.log('clicked');
+    console.log(elementsMap.newTweet);
     elementsMap.newTweet.classList.toggle('visible');
+    // elementsMap.newTweet.classList.toogle('animate1');
+    // elementsMap.newTweet.classList.toogle('animate2');
     elementsMap.textarea.focus();
   });
 
