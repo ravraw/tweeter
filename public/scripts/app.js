@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', e => {
     newTweet: document.querySelector('.container > .new-tweet')
   };
 
-  elementsMap.newTweet.style.display = 'none';
+  //elementsMap.newTweet.style.display = 'none';
 
   console.log('DOM fully loaded and parsed from app.js');
   // data variable
@@ -99,7 +99,8 @@ document.addEventListener('DOMContentLoaded', e => {
 
   // add event listner to compose box
   elementsMap.compose.addEventListener('click', e => {
-    elementsMap.newTweet.style.display = 'flex';
+    console.log('clicked');
+    elementsMap.newTweet.classList.toggle('visible');
     elementsMap.textarea.focus();
   });
 

@@ -1,17 +1,17 @@
-.container .new-tweet {
+.new-tweet {
   border: 1px solid black;
   height: 19rem;
   padding: 1rem;
   border-radius: 1rem;
   background-color: #eee;
   margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: none;
 }
 
 .visible {
-  visibility: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .new-tweet > h2 {
