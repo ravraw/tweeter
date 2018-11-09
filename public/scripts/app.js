@@ -18,8 +18,6 @@ document.addEventListener('DOMContentLoaded', e => {
     newTweet: document.querySelector('.container .new-tweet')
   };
 
-  //elementsMap.newTweet.style.display = 'none';
-
   console.log('DOM fully loaded and parsed from app.js');
   // data variable
   let data;
@@ -106,6 +104,7 @@ document.addEventListener('DOMContentLoaded', e => {
     const now = new Date().getTime();
     let tweetAge = now - created_at;
     let sufix = '';
+    // add the time stamp with correct sufix;
     switch (true) {
       case tweetAge >= 31557600000:
         sufix += 'year ago';
