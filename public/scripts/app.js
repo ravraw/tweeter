@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', e => {
   };
 
   console.log('DOM fully loaded and parsed from app.js');
+
   // data variable
   let data;
 
@@ -93,10 +94,41 @@ document.addEventListener('DOMContentLoaded', e => {
   // add event listner to compose box
   elementsMap.compose.addEventListener('click', e => {
     elementsMap.newTweet.classList.toggle('visible');
-    // elementsMap.newTweet.classList.toogle('animate1');
-    // elementsMap.newTweet.classList.toogle('animate2');
     elementsMap.textarea.focus();
   });
+
+  //add event listener to like tweet
+  setTimeout(() => {
+    const likes = document.querySelector('#tweets__container');
+    let liked = false;
+    likes.addEventListener('click', e => {
+      let parent = e.target.parentElement;
+      if (parent.parentElement.id == 'likesBox') {
+        liked = !liked;
+        console.log(liked);
+        parent.classList.toggle('red');
+        const id = parent.closest('article').dataset.id;
+
+        const request = new XMLHttpRequest();
+        request.open('POST', '/tweets/:id', true);
+        request.setRequestHeader(
+          'Content-Type',
+          'application/x-www-form-urlencoded; charset=UTF-8'
+        );
+        request.onreadystatechange = function() {
+          console.log(this.status);
+          if (this.readyState == 4 && this.status == 201) {
+            data = JSON.parse(this.responseText);
+            //renderTweets([data]);
+            console.log(data);
+          }
+        };
+        request.send(`_id=${id}`);
+        // elementsMap.textarea.value = '';
+        // elementsMap.counter.textContent = //elementsMap.validCounterLength;
+      }
+    });
+  }, 2000);
 
   // function to return html template for article with data inserted from the tweet object
   const createTweetElement = tweetObj => {
@@ -128,7 +160,7 @@ document.addEventListener('DOMContentLoaded', e => {
         break;
     }
 
-    return `<article class="tweet">
+    return `<article class="tweet" data-id=${tweetObj._id}>
         <header class="tweet__header">
           <img src='${tweetObj.user.avatars.small}' alt="avatar">
           <h2 class="user__name">${tweetObj.user.name}</h2>
@@ -146,14 +178,18 @@ document.addEventListener('DOMContentLoaded', e => {
               </svg>
             </div>
             <div class="tweet__icon-box ">
-              <svg class="tweet__icon--flag ">
+              <svg class="tweet__icon--loop ">
                 <use xlink:href="./images/sprite.svg#loop "></use>
               </svg>
             </div>
-            <div class="tweet__icon-box ">
-              <svg class="tweet__icon--flag ">
-                <use xlink:href="./images/sprite.svg#like "></use>
+            <div id="likesBox" class="tweet__icon-box" >
+              <svg  class="tweet__icon--like ">
+                <use xlink:href="./images/sprite.svg#like ">
+                </use>
               </svg>
+              <span class ="tweet__like--count"id="likesCount">${
+                tweetObj.likes
+              }</span>
             </div>
           </div>
         </footer>

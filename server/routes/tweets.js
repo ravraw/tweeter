@@ -6,6 +6,7 @@ const express = require('express');
 const tweetsRoutes = express.Router();
 
 module.exports = function(DataHelpers) {
+  // get all Tweets route
   tweetsRoutes.get('/', function(req, res) {
     DataHelpers.getTweets((err, tweets) => {
       if (err) {
@@ -31,6 +32,7 @@ module.exports = function(DataHelpers) {
       content: {
         text: req.body.text
       },
+      likes: 0,
       created_at: Date.now()
     };
 

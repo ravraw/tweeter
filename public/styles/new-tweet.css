@@ -153,9 +153,37 @@
 .tweet:hover .icons__box {
   visibility: visible;
 }
+.tweet:hover .icons__box .tweet__icon-box {
+  position: relative;
+}
 
 .tweet__icon-box svg {
   height: 20px;
   width: 20px;
   margin-right: 1rem;
+}
+
+/* .tweet__icon-box:hover{
+  position: relative;
+} */
+
+/* like tweet count */
+/* .tweet:hover .icons__box .tweet__icon-box */
+.tweet:hover #likesBox {
+  cursor: pointer;
+}
+.tweet:hover .tweet__like--count {
+  position: absolute;
+  top: -5px;
+  right: 2px;
+  font: 10px;
+  color: #fff;
+  /* border: 1px solid red;*/
+  background-color: lightcoral;
+  padding: 0.1rem;
+  border-radius: 100rem;
+}
+
+.red {
+  filter: invert(0.5) sepia(1) saturate(5) hue-rotate(-52deg);
 }
