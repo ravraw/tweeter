@@ -17,6 +17,7 @@ module.exports = function(DataHelpers) {
     });
   });
 
+  // post a new tweet route
   tweetsRoutes.post('/', function(req, res) {
     console.log(req.body);
     if (!req.body.text) {
@@ -41,6 +42,20 @@ module.exports = function(DataHelpers) {
         res.status(500).json({ error: err.message });
       } else {
         res.status(201).send(tweet);
+      }
+    });
+  });
+
+  // add or remove a like
+  tweetsRoutes.post('/:id/likes', (req, res) => {
+    const { count } = req.body;
+    const { id } = req.params;
+    DataHelpers.toggleLikes(id, count, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        //console.log(res);
+        res.status(201).send(result);
       }
     });
   });

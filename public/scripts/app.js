@@ -15,10 +15,13 @@ document.addEventListener('DOMContentLoaded', e => {
     textarea: document.querySelector('.new-tweet form > textarea'),
     counter: document.querySelector('.form__footer .counter'),
     compose: document.querySelector('.compose__box'),
-    newTweet: document.querySelector('.container .new-tweet')
+    newTweet: document.querySelector('.container .new-tweet'),
+    loginForm: document.querySelector('#login-form')
   };
 
   console.log('DOM fully loaded and parsed from app.js');
+
+  elementsMap.compose.style.display = 'none';
 
   // data variable
   let data;
@@ -105,12 +108,13 @@ document.addEventListener('DOMContentLoaded', e => {
       let parent = e.target.parentElement;
       if (parent.parentElement.id == 'likesBox') {
         liked = !liked;
+        let count = liked ? 1 : -1;
         console.log(liked);
         parent.classList.toggle('red');
         const id = parent.closest('article').dataset.id;
 
         const request = new XMLHttpRequest();
-        request.open('POST', '/tweets/:id', true);
+        request.open('POST', `/tweets/${id}/likes`, true);
         request.setRequestHeader(
           'Content-Type',
           'application/x-www-form-urlencoded; charset=UTF-8'
@@ -118,12 +122,12 @@ document.addEventListener('DOMContentLoaded', e => {
         request.onreadystatechange = function() {
           console.log(this.status);
           if (this.readyState == 4 && this.status == 201) {
-            data = JSON.parse(this.responseText);
+            //data = JSON.parse(this.responseText);
             //renderTweets([data]);
-            console.log(data);
+            //console.log(this.responseText);
           }
         };
-        request.send(`_id=${id}`);
+        request.send(`id=${id}&count=${count}`);
         // elementsMap.textarea.value = '';
         // elementsMap.counter.textContent = //elementsMap.validCounterLength;
       }
@@ -196,4 +200,25 @@ document.addEventListener('DOMContentLoaded', e => {
       </article>
   `;
   };
+
+  // login - register form
+  elementsMap.loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+    const data = { username, password };
+    const request = new XMLHttpRequest();
+    request.open('POST', `/users/login`, true);
+    request.setRequestHeader(
+      'Content-Type',
+      'application/x-www-form-urlencoded; charset=UTF-8'
+    );
+    request.onreadystatechange = function() {
+      console.log(this.status);
+      if (this.readyState == 4 && this.status == 200) {
+        console.log('Login working!!!!');
+      }
+    };
+    request.send(`username=${username}&password=${password}`);
+  });
 });

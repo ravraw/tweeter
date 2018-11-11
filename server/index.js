@@ -31,8 +31,10 @@ MongoClient.connect(
     const DataHelpers = require('./lib/data-helpers.js')(db);
 
     const tweetsRoutes = require('./routes/tweets')(DataHelpers);
+    const usersRoutes = require('./routes/users')(DataHelpers);
 
     app.use('/tweets', tweetsRoutes);
+    app.use('/users', usersRoutes);
 
     //db.close();
   }
