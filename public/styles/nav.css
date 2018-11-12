@@ -55,3 +55,15 @@
 #login-form {
   margin-left: auto;
 }
+#logout-form {
+  margin-left: auto;
+}
+#register-form {
+  margin-left: auto;
+}
+.loggedUser {
+  display: flex;
+  margin-left: auto;
+  justify-content: space-between;
+  align-items: center;
+}

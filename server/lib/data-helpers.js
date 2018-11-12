@@ -26,6 +26,27 @@ module.exports = function makeDataHelpers(db) {
           callback(null, tweets);
         });
     },
+    // getcurrentUser
+    getCurrentUser: function(id, callback) {
+      var ObjectId = require('mongodb').ObjectId;
+      // console.log('from datahelpers ID:', id);
+      // let ID = `ObjectId(${id})`;
+      db.collection('users')
+        .find({ _id: ObjectId(id) })
+        .toArray((err, user) => {
+          if (err) {
+            console.log(err);
+          }
+          //console.log('from getCurrentUser:', user[0]);
+          if (user[0]) {
+            let { username, userHandle } = user[0];
+            let id = user[0]['_id'];
+            callback(null, { id, username, userHandle });
+          } else {
+            callback(null, {});
+          }
+        });
+    },
 
     // add or delete a like
     toggleLikes: function(id, count, callback) {
@@ -45,24 +66,28 @@ module.exports = function makeDataHelpers(db) {
     loginUser: function(user, callback) {
       console.log('From datahelpers -login');
       const { username, password } = user;
-      db.collection('users')
-        .find({ username })
-        .toArray((err, user) => {
-          if (err) {
-            console.log(err);
-          }
-          console.log('Inside array:', user);
-          let currentUser = user[0];
-          let id = currentUser._id;
-          let userHandle = currentUser.userHandle;
-          let userPassword = currentUser.hashedPassword;
-          if (user.length && bcrypt.compareSync(password, userPassword)) {
-            console.log('username is registered');
-            callback(null, { id, username, userHandle });
-          } else {
-            console.log('username not registered');
-          }
-        });
+      if (username && password) {
+        db.collection('users')
+          .find({ username })
+          .toArray((err, user) => {
+            if (err) {
+              console.log(err);
+            }
+            let currentUser = user[0];
+            if (currentUser) {
+              let id = currentUser['_id'];
+              let userHandle = currentUser.userHandle;
+              let userPassword = currentUser.hashedPassword;
+              let username = currentUser.username;
+              if (user.length && bcrypt.compareSync(password, userPassword)) {
+                console.log('username is registered');
+                callback(null, { id, username, userHandle });
+              } else {
+                console.log('username not registered');
+              }
+            }
+          });
+      }
     },
 
     // register users
@@ -86,8 +111,9 @@ module.exports = function makeDataHelpers(db) {
               if (err) {
                 console.log(err);
               }
-              //req.session.userSession = hashedPassword;
-              callback(null, { username, userHandle });
+              console.log('from data-helpers register', result.ops);
+              const id = result.ops[0]['_id'];
+              callback(null, { id, username, userHandle });
             });
           }
         });

@@ -36,20 +36,36 @@
     <nav id="nav-bar">
       <img class="logo" src="/images/bird.png" />
       <span class="header">Tweeter</span>
-      <!-- login / register -->
+      <!-- login form -->
       <form id="login-form" method="POST">
         <input name="username" type="text" placeholder="username" />
         <input name="password" type="password" placeholder="pasword" />
-        <input type="submit" value="Login" />
+        <input type="submit" value="LOGIN" />
+        <input class="register-btn" type="button" value="REGISTER" />
+      </form>
+      <!-- register form -->
+      <form id="register-form" method="POST">
+        <input name="username" type="text" placeholder="username" />
+        <input name="password" type="password" placeholder="pasword" />
+        <input type="submit" value="REGISTER" />
       </form>
       <!-- compose box -->
-      <div class="compose__box">
-        <div class="tweet__icon-box ">
-          <svg class="tweet__icon--compose">
-            <use xlink:href="./images/sprite.svg#edit"></use>
-          </svg>
+      <div class="loggedUser">
+        <!-- Logged in as -->
+        <p class="loggedMessage"></p>
+
+        <form id="logout-form" method="POST">
+          <input type="submit" value="LOGOUT" />
+        </form>
+        <!-- compose box -->
+        <div class="compose__box">
+          <div class="tweet__icon-box ">
+            <svg class="tweet__icon--compose">
+              <use xlink:href="./images/sprite.svg#edit"></use>
+            </svg>
+          </div>
+          <button class="compose__btn">Compose</button>
         </div>
-        <button class="compose__btn">Compose</button>
       </div>
     </nav>
 

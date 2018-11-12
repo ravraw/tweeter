@@ -6,10 +6,19 @@ require('dotenv').config();
 const PORT = 8080;
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieSession = require('cookie-session');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(
+  cookieSession({
+    name: 'session',
+    keys: ['qwertyu', 'ertyui'],
+    // Cookie Options
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  })
+);
 
 const MongoClient = require('mongodb').MongoClient;
 const MONGODB_URI = 'mongodb://localhost:27017/tweeter';
@@ -32,9 +41,11 @@ MongoClient.connect(
 
     const tweetsRoutes = require('./routes/tweets')(DataHelpers);
     const usersRoutes = require('./routes/users')(DataHelpers);
+    //const rootRoutes = require('./routes/')(DataHelpers);
 
     app.use('/tweets', tweetsRoutes);
     app.use('/users', usersRoutes);
+    // app.use('/');
 
     //db.close();
   }

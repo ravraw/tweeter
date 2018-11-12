@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', e => {
   // DOM elements MAP
   const elementsMap = {
     validCounterLength: 140,
+    loggedIn: false,
+    currentUser: '',
     tweets_container: document.getElementById('tweets__container'),
     errorParagraph: document.querySelector('.error__message'),
     tweetForm: document.querySelector('.new-tweet form'),
@@ -16,12 +18,16 @@ document.addEventListener('DOMContentLoaded', e => {
     counter: document.querySelector('.form__footer .counter'),
     compose: document.querySelector('.compose__box'),
     newTweet: document.querySelector('.container .new-tweet'),
-    loginForm: document.querySelector('#login-form')
+    loginForm: document.querySelector('#login-form'),
+    registerForm: document.querySelector('#register-form'),
+    logoutForm: document.querySelector('#logout-form'),
+    loggedUser: document.querySelector('.loggedUser'),
+    loggedMessage: document.querySelector('.loggedMessage')
   };
 
   console.log('DOM fully loaded and parsed from app.js');
-
-  elementsMap.compose.style.display = 'none';
+  elementsMap.registerForm.style.display = 'none';
+  elementsMap.loggedUser.style.display = 'none';
 
   // data variable
   let data;
@@ -41,6 +47,10 @@ document.addEventListener('DOMContentLoaded', e => {
     request.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         data = JSON.parse(this.responseText);
+        console.log('from load tweetsapp.js:', data);
+        if (data.currentUser) {
+          elementsMap.currentUser = data.currentUser;
+        }
         renderTweets(data);
       }
     };
@@ -99,40 +109,38 @@ document.addEventListener('DOMContentLoaded', e => {
     elementsMap.newTweet.classList.toggle('visible');
     elementsMap.textarea.focus();
   });
+  // add eventlistner to register-btn
+  document.querySelector('.register-btn').addEventListener('click', () => {
+    elementsMap.registerForm.style.display = 'block';
+    elementsMap.loginForm.style.display = 'none';
+  });
 
   //add event listener to like tweet
-  setTimeout(() => {
-    const likes = document.querySelector('#tweets__container');
-    let liked = false;
-    likes.addEventListener('click', e => {
-      let parent = e.target.parentElement;
-      if (parent.parentElement.id == 'likesBox') {
-        liked = !liked;
-        let count = liked ? 1 : -1;
-        console.log(liked);
-        parent.classList.toggle('red');
-        const id = parent.closest('article').dataset.id;
+  const likes = document.querySelector('#tweets__container');
+  let liked = false;
+  likes.addEventListener('click', e => {
+    let parent = e.target.parentElement;
+    if (parent.parentElement.id == 'likesBox') {
+      liked = !liked;
+      let count = liked ? 1 : -1;
+      console.log(liked);
+      parent.classList.toggle('red');
+      const id = parent.closest('article').dataset.id;
 
-        const request = new XMLHttpRequest();
-        request.open('POST', `/tweets/${id}/likes`, true);
-        request.setRequestHeader(
-          'Content-Type',
-          'application/x-www-form-urlencoded; charset=UTF-8'
-        );
-        request.onreadystatechange = function() {
-          console.log(this.status);
-          if (this.readyState == 4 && this.status == 201) {
-            //data = JSON.parse(this.responseText);
-            //renderTweets([data]);
-            //console.log(this.responseText);
-          }
-        };
-        request.send(`id=${id}&count=${count}`);
-        // elementsMap.textarea.value = '';
-        // elementsMap.counter.textContent = //elementsMap.validCounterLength;
-      }
-    });
-  }, 2000);
+      const request = new XMLHttpRequest();
+      request.open('POST', `/tweets/${id}/likes`, true);
+      request.setRequestHeader(
+        'Content-Type',
+        'application/x-www-form-urlencoded; charset=UTF-8'
+      );
+      request.onreadystatechange = function() {
+        console.log(this.status);
+        if (this.readyState == 4 && this.status == 201) {
+        }
+      };
+      request.send(`id=${id}&count=${count}`);
+    }
+  });
 
   // function to return html template for article with data inserted from the tweet object
   const createTweetElement = tweetObj => {
@@ -201,12 +209,38 @@ document.addEventListener('DOMContentLoaded', e => {
   `;
   };
 
-  // login - register form
+  // Load logged in user
+  const loadUser = () => {
+    const request = new XMLHttpRequest();
+    request.open('GET', '/users/currentUser', true);
+    request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let currentUser = JSON.parse(this.responseText);
+        console.log('from load user:', currentUser);
+        if (currentUser.userHandle) {
+          elementsMap.currentUser = currentUser;
+          elementsMap.registerForm.style.display = 'none';
+          elementsMap.loginForm.style.display = 'none';
+          elementsMap.loggedUser.style.display = 'flex';
+          elementsMap.loggedMessage.textContent = `Logged in as ${
+            currentUser.userHandle
+          }`;
+        }
+      }
+    };
+    request.send();
+  };
+  loadUser();
+
+  // login post request form
   elementsMap.loginForm.addEventListener('submit', e => {
     e.preventDefault();
     const username = e.target.username.value;
     const password = e.target.password.value;
-    const data = { username, password };
+    const data = {
+      username,
+      password
+    };
     const request = new XMLHttpRequest();
     request.open('POST', `/users/login`, true);
     request.setRequestHeader(
@@ -217,8 +251,78 @@ document.addEventListener('DOMContentLoaded', e => {
       console.log(this.status);
       if (this.readyState == 4 && this.status == 200) {
         console.log('Login working!!!!');
+        let res = JSON.parse(this.responseText);
+        console.log('from login app.js:', res);
+        console.log(elementsMap.loggedUser);
+        elementsMap.loginForm.style.display = 'none';
+        elementsMap.loggedUser.style.display = 'flex';
+        elementsMap.loggedMessage.textContent = `Logged in as ${
+          res.userHandle
+        }`;
+        e.target.username.value = '';
+        e.target.password.value = '';
       }
     };
     request.send(`username=${username}&password=${password}`);
   });
+
+  // Register form post request
+  elementsMap.registerForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+    const data = {
+      username,
+      password
+    };
+    if (username && password) {
+      const request = new XMLHttpRequest();
+      request.open('POST', `/users/register`, true);
+      request.setRequestHeader(
+        'Content-Type',
+        'application/x-www-form-urlencoded; charset=UTF-8'
+      );
+      request.onreadystatechange = function() {
+        console.log(this.status);
+        if (this.readyState == 4 && this.status == 200) {
+          console.log('Register working!!!!');
+          let res = JSON.parse(this.responseText);
+          console.log('from regiter app.js:', res.currentUser);
+          elementsMap.currentUser = res.currentUser;
+        }
+      };
+      request.send(`username=${username}&password=${password}`);
+    }
+  });
+
+  //logout form
+  elementsMap.logoutForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const request = new XMLHttpRequest();
+    request.open('POST', `/users/logout`, true);
+    request.setRequestHeader(
+      'Content-Type',
+      'application/x-www-form-urlencoded; charset=UTF-8'
+    );
+    request.onreadystatechange = function() {
+      console.log(this.status);
+      if (this.readyState == 4 && this.status == 200) {
+        console.log('Logout working!!!!');
+        elementsMap.currentUser = '';
+        elementsMap.loginForm.style.display = 'block';
+        elementsMap.loggedUser.style.display = 'none';
+        elementsMap.loggedMessage.textContent = '';
+      }
+    };
+    request.send();
+  });
+
+  // end
+  if (elementsMap.currentUser) {
+    elementsMap.loggedUser.textContent = `Logged in as ${
+      elementsMap.currentUser.userHandle
+    }`;
+  }
+
+  console.log('from app.js end :', elementsMap.currentUser);
 });

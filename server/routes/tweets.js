@@ -10,16 +10,16 @@ module.exports = function(DataHelpers) {
   tweetsRoutes.get('/', function(req, res) {
     DataHelpers.getTweets((err, tweets) => {
       if (err) {
+        1;
         res.status(500).json({ error: err.message });
       } else {
-        res.json(tweets);
+        res.status(200).json(tweets);
       }
     });
   });
 
   // post a new tweet route
   tweetsRoutes.post('/', function(req, res) {
-    console.log(req.body);
     if (!req.body.text) {
       res.status(400).json({ error: 'invalid request: no data in POST body' });
       return;
