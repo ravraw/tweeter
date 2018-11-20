@@ -37,14 +37,14 @@ $(document).ready(() => {
       type: 'GET',
       url: '/tweets',
       success: function(resp) {
-        data = JSON.parse(resp);
-        renderTweets(data);
+        renderTweets(resp);
       },
       error: function(err) {
         console.log(err);
       }
     });
   };
+  loadTweets();
 
   // check error function
   const hasError = tweetText => {
