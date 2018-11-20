@@ -51,6 +51,7 @@
   font-size: 2rem;
   border-radius: 2px;
   outline: none;
+  resize: none;
 }
 .form__footer {
   display: flex;
