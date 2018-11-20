@@ -50,9 +50,11 @@ module.exports = function makeDataHelpers(db) {
 
     // add or delete a like
     toggleLikes: function(id, count, callback) {
+      console.log(count);
+      var ObjectId = require('mongodb').ObjectId;
       db.collection('tweets').findOneAndUpdate(
-        { _id: id },
-        { $set: { content: 'helllo0000000000000' } },
+        { _id: ObjectId(id) },
+        { $inc: { likes: Number(count) } },
         function(err, result) {
           if (err) {
             console.log(err);
