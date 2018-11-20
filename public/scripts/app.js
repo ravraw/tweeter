@@ -5,18 +5,25 @@
  */
 
 // waits till DOM loads
-document.addEventListener('DOMContentLoaded', e => {
+$(document).ready(() => {
   // DOM elements MAP
   const elementsMap = {
     validCounterLength: 140,
-    tweets_container: document.getElementById('tweets__container'),
-    errorParagraph: document.querySelector('.error__message'),
-    tweetForm: document.querySelector('.new-tweet form'),
-    textarea: document.querySelector('.new-tweet form > textarea'),
-    counter: document.querySelector('.form__footer .counter'),
-    compose: document.querySelector('.compose__box'),
-    newTweet: document.querySelector('.container .new-tweet')
+    tweets_container: $('#tweets__container')[0],
+    errorParagraph: $('.error__message')[0],
+    tweetForm: $('.new-tweet form')[0],
+    textarea: $('.new-tweet form > textarea')[0],
+    counter: $('.form__footer .counter')[0],
+    compose: $('.compose__box')[0],
+    newTweet: $('.container .new-tweet')[0]
   };
+  // tweets_container: document.getElementById('tweets__container'),
+  // errorParagraph: document.querySelector('.error__message'),
+  // tweetForm: document.querySelector('.new-tweet form'),
+  // textarea: document.querySelector('.new-tweet form > textarea'),
+  // counter: document.querySelector('.form__footer .counter'),
+  // compose: document.querySelector('.compose__box'),
+  // newTweet: document.querySelector('.container .new-tweet')
 
   console.log('DOM fully loaded and parsed from app.js');
   // data variable
@@ -31,18 +38,32 @@ document.addEventListener('DOMContentLoaded', e => {
   };
 
   // get tweets with ajax
+  // const loadTweets = () => {
+  //   const request = new XMLHttpRequest();
+  //   request.open('GET', '/tweets', true);
+  //   request.onreadystatechange = function() {
+  //     if (this.readyState == 4 && this.status == 200) {
+  //       data = JSON.parse(this.responseText);
+  //       renderTweets(data);
+  //     }
+  //   };
+  //   request.send();
+  // };
+  // loadTweets();
+
   const loadTweets = () => {
-    const request = new XMLHttpRequest();
-    request.open('GET', '/tweets', true);
-    request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        data = JSON.parse(this.responseText);
+    $.ajax({
+      type: 'GET',
+      url: '/tweets',
+      success: function(resp) {
+        data = JSON.parse(resp);
         renderTweets(data);
+      },
+      error: function(err) {
+        console.log(err);
       }
-    };
-    request.send();
+    });
   };
-  loadTweets();
 
   // check error function
   const hasError = tweetText => {
@@ -61,6 +82,33 @@ document.addEventListener('DOMContentLoaded', e => {
   };
 
   // callback function for submitting a tweet
+  // const submitTweet = e => {
+  //   event.preventDefault();
+  //   let errorMessage = '';
+  //   const tweetText = elementsMap.textarea.value;
+  //   if (!hasError(tweetText)) {
+  //     errorMessage = '';
+  //     if (event.keyCode === 13 || e.type === 'submit') {
+  //       const request = new XMLHttpRequest();
+  //       request.open('POST', '/tweets', true);
+  //       request.setRequestHeader(
+  //         'Content-Type',
+  //         'application/x-www-form-urlencoded; charset=UTF-8'
+  //       );
+  //       request.onreadystatechange = function() {
+  //         if (this.readyState == 4 && this.status == 201) {
+  //           data = JSON.parse(this.responseText);
+  //           renderTweets([data]);
+  //         }
+  //       };
+  //       request.send(`text=${tweetText}`);
+  //       elementsMap.textarea.value = '';
+  //       elementsMap.counter.textContent = elementsMap.validCounterLength;
+  //     }
+  //   }
+  // };
+
+  //callback function for submitting a tweet
   const submitTweet = e => {
     event.preventDefault();
     let errorMessage = '';
@@ -68,33 +116,49 @@ document.addEventListener('DOMContentLoaded', e => {
     if (!hasError(tweetText)) {
       errorMessage = '';
       if (event.keyCode === 13 || e.type === 'submit') {
-        const request = new XMLHttpRequest();
-        request.open('POST', '/tweets', true);
-        request.setRequestHeader(
-          'Content-Type',
-          'application/x-www-form-urlencoded; charset=UTF-8'
-        );
-        request.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 201) {
-            data = JSON.parse(this.responseText);
-            renderTweets([data]);
+        // const request = new XMLHttpRequest();
+        // request.open('POST', '/tweets', true);
+        // request.setRequestHeader(
+        //   'Content-Type',
+        //   'application/x-www-form-urlencoded; charset=UTF-8'
+        // );
+        // request.onreadystatechange = function() {
+        //   if (this.readyState == 4 && this.status == 201) {
+        //     data = JSON.parse(this.responseText);
+        //     renderTweets([data]);
+        //   }
+        // };
+
+        $.ajax({
+          type: 'POST',
+          url: '/tweets',
+          data: `text=${tweetText}`,
+          success: function(resp) {
+            renderTweets([resp]);
+          },
+          error: function(err) {
+            console.log(err);
           }
-        };
-        request.send(`text=${tweetText}`);
+        });
         elementsMap.textarea.value = '';
         elementsMap.counter.textContent = elementsMap.validCounterLength;
       }
     }
   };
+
   // added event listeners for submit and enter on form
-  elementsMap.tweetForm.addEventListener('keyup', submitTweet);
-  elementsMap.tweetForm.addEventListener('submit', submitTweet);
+  console.log(elementsMap.tweetForm);
+  $('.new-tweet form').on('keyup', submitTweet);
+  $('.new-tweet form').on('submit', submitTweet);
 
   // add event listner to compose box
-  elementsMap.compose.addEventListener('click', e => {
-    elementsMap.newTweet.classList.toggle('visible');
+  //elementsMap.compose.addEventListener('click', e => {
+  $('.compose__box').on('click', e => {
+    //elementsMap.newTweet.classList.toggle('visible');
+    $('.container .new-tweet').toggleClass('visible');
     // elementsMap.newTweet.classList.toogle('animate1');
     // elementsMap.newTweet.classList.toogle('animate2');
+    // elementsMap.textarea.focus();
     elementsMap.textarea.focus();
   });
 
